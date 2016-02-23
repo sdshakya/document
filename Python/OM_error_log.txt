@@ -1,0 +1,110 @@
+Can not read response from server. Expected to read 4 bytes, read 0 bytes before connection was unexpectedly lost.. Stacktrace follows:
+org.springframework.dao.DataAccessResourceFailureException: Hibernate operation: could not prepare statement; SQL [select user0_.id as id1_28_0_, user0_.version as version2_28_0_, user0_.account_expired as account_3_28_0_, user0_.account_locked as account_4_28_0_, user0_.alias as alias5_28_0_, user0_.book_of_business_access as book_of_6_28_0_, user0_.customer as customer7_28_0_, user0_.date_created as date_cre8_28_0_, user0_.dw_member_id as dw_membe9_28_0_, user0_.effective_date as effecti10_28_0_, user0_.employer as employe11_28_0_, user0_.enabled as enabled12_28_0_, user0_.expiration_date as expirat13_28_0_, user0_.firstname as firstna14_28_0_, user0_.groupid as groupid15_28_0_, user0_.is_first_login as is_firs16_28_0_, user0_.issso as issso17_28_0_, user0_.last_updated as last_up18_28_0_, user0_.lastname as lastnam19_28_0_, user0_.location as locatio20_28_0_, user0_.middlename as middlen21_28_0_, user0_.out_of_office as out_of_22_28_0_, user0_.`password` as passwor23_28_0_, user0_.password_expiration_date as passwor24_28_0_, user0_.password_expired as passwor25_28_0_, user0_.show_phi_info as show_ph26_28_0_, user0_.soft_delete as soft_de27_28_0_, user0_.status as status28_28_0_, user0_.temporary_password as tempora29_28_0_, user0_.time_zone as time_zo30_28_0_, user0_.user_login_time as user_lo31_28_0_, user0_.username as usernam32_28_0_ from user user0_ where user0_.id=?]; No operations allowed after connection closed.; nested exception is com.mysql.jdbc.exceptions.jdbc4.MySQLNonTransientConnectionException: No operations allowed after connection closed.
+	at SessionFilters$_closure1$_closure2$_closure3.doCall(SessionFilters.groovy:23)
+	at grails.plugin.springsecurity.web.filter.GrailsAnonymousAuthenticationFilter.doFilter(GrailsAnonymousAuthenticationFilter.java:53)
+	at grails.plugin.springsecurity.web.authentication.RequestHolderAuthenticationFilter.doFilter(RequestHolderAuthenticationFilter.java:53)
+	at grails.plugin.springsecurity.web.authentication.logout.MutableLogoutFilter.doFilter(MutableLogoutFilter.java:62)
+	at org.jasig.cas.client.session.SingleSignOutFilter.doFilter(SingleSignOutFilter.java:76)
+	at java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1145)
+	at java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:615)
+	at java.lang.Thread.run(Thread.java:745)
+Caused by: com.mysql.jdbc.exceptions.jdbc4.MySQLNonTransientConnectionException: No operations allowed after connection closed.
+	at com.mysql.jdbc.Util.handleNewInstance(Util.java:400)
+	at com.mysql.jdbc.Util.getInstance(Util.java:383)
+	at com.mysql.jdbc.SQLError.createSQLException(SQLError.java:958)
+	at com.mysql.jdbc.SQLError.createSQLException(SQLError.java:937)
+	at com.mysql.jdbc.SQLError.createSQLException(SQLError.java:926)
+	at com.mysql.jdbc.SQLError.createSQLException(SQLError.java:872)
+	at com.mysql.jdbc.ConnectionImpl.throwConnectionClosedException(ConnectionImpl.java:1236)
+	at com.mysql.jdbc.ConnectionImpl.checkClosed(ConnectionImpl.java:1231)
+	at com.mysql.jdbc.ConnectionImpl.setAutoCommit(ConnectionImpl.java:4841)
+	... 8 more
+Caused by: com.mysql.jdbc.exceptions.jdbc4.CommunicationsException: Communications link failure
+
+The last packet successfully received from the server was 2,017,353 milliseconds ago.  The last packet sent successfully to the server was 1 milliseconds ago.
+	at com.mysql.jdbc.Util.handleNewInstance(Util.java:400)
+	at com.mysql.jdbc.SQLError.createCommunicationsException(SQLError.java:1038)
+	at com.mysql.jdbc.MysqlIO.reuseAndReadPacket(MysqlIO.java:3434)
+	at com.mysql.jdbc.MysqlIO.reuseAndReadPacket(MysqlIO.java:3334)
+	at com.mysql.jdbc.MysqlIO.checkErrorPacket(MysqlIO.java:3774)
+	at com.mysql.jdbc.MysqlIO.sendCommand(MysqlIO.java:2447)
+	at com.mysql.jdbc.MysqlIO.sqlQueryDirect(MysqlIO.java:2594)
+	at com.mysql.jdbc.ConnectionImpl.execSQL(ConnectionImpl.java:2541)
+	at com.mysql.jdbc.ConnectionImpl.setAutoCommit(ConnectionImpl.java:4882)
+	at org.grails.datastore.gorm.GormStaticApi.findWhere(GormStaticApi.groovy:622)
+	at com.deerwalk.impl.CustomGormUserDetailService$_loadUserByUsername_closure3.doCall(CustomGormUserDetailService.groovy:68)
+	at org.grails.datastore.gorm.GormStaticApi.withTransaction(GormStaticApi.groovy:815)
+	at org.grails.datastore.gorm.GormStaticApi.withTransaction(GormStaticApi.groovy:715)
+	at com.deerwalk.impl.CustomGormUserDetailService.loadUserByUsername(CustomGormUserDetailService.groovy:66)
+	at com.deerwalk.impl.CustomGormUserDetailService.loadUserByUsername(CustomGormUserDetailService.groovy:80)
+	at springframework.deerwalk.impl.DwUserDetailsByNameServiceWrapper.loadUserDetails(DwUserDetailsByNameServiceWrapper.java:32)
+	at springframework.deerwalk.impl.CustomProviderManager.authenticate(CustomProviderManager.java:167)
+	... 5 more
+Caused by: java.io.EOFException: Can not read response from server. Expected to read 4 bytes, read 0 bytes before connection was unexpectedly lost.
+	at com.mysql.jdbc.MysqlIO.readFully(MysqlIO.java:2926)
+	at com.mysql.jdbc.MysqlIO.reuseAndReadPacket(MysqlIO.java:3344)
+	... 19 more
+2015-11-24 09:48:47,098 [http-nio-8443-exec-7] ERROR spi.SqlExceptionHelper  - No operations allowed after connection closed.
+2015-11-24 09:48:47,108 [http-nio-8443-exec-7] ERROR errors.GrailsExceptionResolver  - EOFException occurred when processing request: [GET] /phaseTracker/index
+Can not read response from server. Expected to read 4 bytes, read 0 bytes before connection was unexpectedly lost.. Stacktrace follows:
+org.codehaus.groovy.grails.web.pages.exceptions.GroovyPagesException: Error applying layout : main
+	at grails.plugin.springsecurity.web.filter.GrailsAnonymousAuthenticationFilter.doFilter(GrailsAnonymousAuthenticationFilter.java:53)
+	at grails.plugin.springsecurity.web.authentication.RequestHolderAuthenticationFilter.doFilter(RequestHolderAuthenticationFilter.java:53)
+	at grails.plugin.springsecurity.web.authentication.logout.MutableLogoutFilter.doFilter(MutableLogoutFilter.java:62)
+	at org.jasig.cas.client.session.SingleSignOutFilter.doFilter(SingleSignOutFilter.java:76)
+	at java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1145)
+	at java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:615)
+	at java.lang.Thread.run(Thread.java:745)
+Caused by: org.codehaus.groovy.grails.web.pages.exceptions.GroovyPagesException: Error processing GroovyPageView: Error executing tag <asset:script>: Error executing tag <g:loggedUser>: could not prepare statement
+	... 7 more
+Caused by: org.codehaus.groovy.grails.web.taglib.exceptions.GrailsTagException: Error executing tag <asset:script>: Error executing tag <g:loggedUser>: could not prepare statement
+	at gsp_OMFront_layoutsmain_gsp$_run_closure1.doCall(gsp_OMFront_layoutsmain_gsp.groovy:68)
+	at gsp_OMFront_layoutsmain_gsp.run(gsp_OMFront_layoutsmain_gsp.groovy:85)
+	... 7 more
+Caused by: org.codehaus.groovy.grails.web.taglib.exceptions.GrailsTagException: Error executing tag <g:loggedUser>: could not prepare statement
+	at gsp_OMFront_layoutsmain_gsp$_run_closure1$_closure4.doCall(gsp_OMFront_layoutsmain_gsp.groovy:59)
+	at asset.pipeline.AssetsTagLib$_closure5.doCall(AssetsTagLib.groovy:113)
+	... 9 more
+Caused by: org.hibernate.exception.JDBCConnectionException: could not prepare statement
+	at grails.orm.HibernateCriteriaBuilder.executeUniqueResultWithProxyUnwrap(HibernateCriteriaBuilder.java:146)
+	at grails.plugin.springsecurity.SpringSecurityService.getCurrentUser(SpringSecurityService.groovy:87)
+	at com.deerwalk.operationmanager.OMTagLib$_closure1.doCall(OMTagLib.groovy:10)
+	... 11 more
+Caused by: com.mysql.jdbc.exceptions.jdbc4.MySQLNonTransientConnectionException: No operations allowed after connection closed.
+	at com.mysql.jdbc.Util.handleNewInstance(Util.java:400)
+	at com.mysql.jdbc.Util.getInstance(Util.java:383)
+	at com.mysql.jdbc.SQLError.createSQLException(SQLError.java:958)
+	at com.mysql.jdbc.SQLError.createSQLException(SQLError.java:937)
+	at com.mysql.jdbc.SQLError.createSQLException(SQLError.java:926)
+	at com.mysql.jdbc.SQLError.createSQLException(SQLError.java:872)
+	at com.mysql.jdbc.ConnectionImpl.throwConnectionClosedException(ConnectionImpl.java:1236)
+	at com.mysql.jdbc.ConnectionImpl.checkClosed(ConnectionImpl.java:1231)
+	at com.mysql.jdbc.ConnectionImpl.prepareStatement(ConnectionImpl.java:4140)
+	at com.mysql.jdbc.ConnectionImpl.prepareStatement(ConnectionImpl.java:4109)
+	... 14 more
+Caused by: com.mysql.jdbc.exceptions.jdbc4.CommunicationsException: Communications link failure
+
+The last packet successfully received from the server was 2,017,353 milliseconds ago.  The last packet sent successfully to the server was 1 milliseconds ago.
+	at com.mysql.jdbc.Util.handleNewInstance(Util.java:400)
+	at com.mysql.jdbc.SQLError.createCommunicationsException(SQLError.java:1038)
+	at com.mysql.jdbc.MysqlIO.reuseAndReadPacket(MysqlIO.java:3434)
+	at com.mysql.jdbc.MysqlIO.reuseAndReadPacket(MysqlIO.java:3334)
+	at com.mysql.jdbc.MysqlIO.checkErrorPacket(MysqlIO.java:3774)
+	at com.mysql.jdbc.MysqlIO.sendCommand(MysqlIO.java:2447)
+	at com.mysql.jdbc.MysqlIO.sqlQueryDirect(MysqlIO.java:2594)
+	at com.mysql.jdbc.ConnectionImpl.execSQL(ConnectionImpl.java:2541)
+	at com.mysql.jdbc.ConnectionImpl.setAutoCommit(ConnectionImpl.java:4882)
+	at org.grails.datastore.gorm.GormStaticApi.findWhere(GormStaticApi.groovy:622)
+	at com.deerwalk.impl.CustomGormUserDetailService$_loadUserByUsername_closure3.doCall(CustomGormUserDetailService.groovy:68)
+	at org.grails.datastore.gorm.GormStaticApi.withTransaction(GormStaticApi.groovy:815)
+	at org.grails.datastore.gorm.GormStaticApi.withTransaction(GormStaticApi.groovy:715)
+	at com.deerwalk.impl.CustomGormUserDetailService.loadUserByUsername(CustomGormUserDetailService.groovy:66)
+	at com.deerwalk.impl.CustomGormUserDetailService.loadUserByUsername(CustomGormUserDetailService.groovy:80)
+	at springframework.deerwalk.impl.DwUserDetailsByNameServiceWrapper.loadUserDetails(DwUserDetailsByNameServiceWrapper.java:32)
+	at springframework.deerwalk.impl.CustomProviderManager.authenticate(CustomProviderManager.java:167)
+	... 5 more
+Caused by: java.io.EOFException: Can not read response from server. Expected to read 4 bytes, read 0 bytes before connection was unexpectedly lost.
+	at com.mysql.jdbc.MysqlIO.readFully(MysqlIO.java:2926)
+	at com.mysql.jdbc.MysqlIO.reuseAndReadPacket(MysqlIO.java:3344)
+	... 19 more
+

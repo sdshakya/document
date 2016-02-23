@@ -1,0 +1,7 @@
+2016-01-15 11:12:11,600 Info: File exists in S3 Bucket0
+2016-01-15 11:12:11,601 Info: File Count: 0
+2016-01-15 11:12:18,434 Info: Download is in progress
+2016-01-15 11:12:18,435 Info: File Downloaded Successfully
+2016-01-15 11:12:18,435 Info: File extraction is in process
+2016-01-15 11:12:18,440 Info: Restore is in progress
+2016-01-15 11:12:18,555 Info: Restore Completed

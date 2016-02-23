@@ -1,0 +1,4 @@
+import os
+fileName = raw_input('Enter file name: ')
+command = 's3cmd get s3://dw-build/' + fileName
+os.system(command)
