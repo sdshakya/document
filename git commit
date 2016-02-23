@@ -1,0 +1,4 @@
+sdshakya@dwnpcpu140:~/document$ git add -A
+sdshakya@dwnpcpu140:~/document$ git commit -m "doc for RE " -a
+git status
+sdshakya@dwnpcpu140:~/document$ git push origin master
