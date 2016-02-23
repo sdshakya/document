@@ -1,0 +1,7 @@
+To kill sleeping processes in mysql server
+1. First through terminal. Connect to database and run following query.
+
+select concat('KILL ',id,';') from information_schema.processlist where Command='Sleep' into outfile '/tmp/j.txt'; -- creates a file with kill and its id for sleeping commands.
+2. After that run following.
+source /tmp/s.txt; -- uses created file for killing the process.
+%
