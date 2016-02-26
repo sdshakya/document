@@ -1,0 +1,197 @@
+<project name="Master Hybrid (Ant + Bash) Build Script v2.2 - Deploy Only" basedir="." xmlns:ivy="antlib:org.apache.ivy.ant">
+    <!--Author: Binaya Dahal (bidahal@deerwalk.com)-->
+
+    <property environment="env" />
+    <property name="host.server" value="${env.HOST_SERVER}" />
+    <property name="host.user" value="${env.HOST_USER}" />
+    <property name="deploy.package" value="${env.DEPLOY_PACKAGE}" />
+    <property name="source.package.location" value="${env.SOURCE_PACKAGE_LOCATION}" />
+    <property name="source.package.name" value="${env.SOURCE_PACKAGE_NAME}" />
+    <property name="tomcat.location" value="${env.TOMCAT_LOCATION}" />
+    <property name="destination.package.name" value="${env.DESTINATION_PACKAGE_NAME}" />
+    <property name="restart.tomcat" value="${env.RESTART_TOMCAT}" />
+    <property name="restart.tomcat.as.root" value="${env.RESTART_TOMCAT_AS_ROOT}" />
+    <property name="tomcat.start.stop.script" value="${env.TOMCAT_START_STOP_SCRIPT}" />
+    <property name="backup.location" value="${env.BACKUP_LOCATION}" />
+    <property name="backup.name" value="${env.BUILD_TAG}_${env.BUILD_ID}_${destination.package.name}.war" />
+    
+    <taskdef resource="net/sf/antcontrib/antcontrib.properties">
+        <classpath>
+            <!--<pathelement location="/usr/share/java/ant-contrib-0.6.jar" />--> 
+            <pathelement location="/mnt/.jenkins/tools/Ant/jen-ant-1.7.1/lib/ant-contrib-0.6.jar" />
+        </classpath>
+    </taskdef>
+    
+    <fail message="HOST_SERVER variable is not set.">
+        <condition>
+            <not>
+                <isset property="env.HOST_SERVER" />
+            </not>
+        </condition>
+    </fail>
+    <fail message="SOURCE_PACKAGE_LOCATION variable is not set.">
+        <condition>
+            <not>
+                <isset property="env.SOURCE_PACKAGE_LOCATION" />
+            </not>
+        </condition>
+    </fail>
+    <fail message="SOURCE_PACKAGE_NAME variable is not set.">
+        <condition>
+            <not>
+                <isset property="env.SOURCE_PACKAGE_NAME" />
+            </not>
+        </condition>
+    </fail>
+
+
+    <fail message="TOMCAT_LOCATION variable is not set.">
+        <condition>
+            <not>
+                <isset property="env.TOMCAT_LOCATION" />
+            </not>
+        </condition>
+    </fail>
+    <fail message="DESTINATION_PACKAGE_NAME variable is not set.">
+        <condition>
+            <not>
+                <isset property="env.DESTINATION_PACKAGE_NAME" />
+            </not>
+        </condition>
+    </fail>
+
+    <fail message="BACKUP_LOCATION variable is not set.">
+        <condition>
+            <not>
+                <isset property="env.BACKUP_LOCATION" />
+            </not>
+        </condition>
+    </fail>
+
+    <fail message="HOST_USER variable is not set.">
+        <condition>
+            <not>
+                <isset property="env.HOST_USER" />
+            </not>
+        </condition>
+    </fail>
+
+    <fail message="DEPLOY_PACKAGE variable is not set.">
+        <condition>
+            <not>
+                <isset property="env.DEPLOY_PACKAGE" />
+            </not>
+        </condition>
+    </fail>
+    
+    
+    <target name="default">
+        <antcall target="custom-info" />
+        <if>
+            <and>
+                <equals arg1="${deploy.package}" arg2="y" />
+            </and>
+            <then>
+                <if>
+                    <and>
+                        <equals arg1="${restart.tomcat}" arg2="y" />
+                    </and>
+                    <then>
+                        <if>
+                            <and>
+                                <equals arg1="${restart.tomcat.as.root}" arg2="y" />
+                            </and>
+                            <then>
+                                <antcall target="restartTomcatAsRoot" />
+                                <antcall target="taillog" />
+                            </then>
+                            <else>
+                                <antcall target="restartTomcat" />
+                                <antcall target="taillog" />
+                            </else>
+                        </if>
+                    </then>
+                    <else>
+                        <antcall target="deploy" />
+                        <antcall target="taillog" />
+                    </else>
+                </if>
+            </then>
+            <else>
+                <echo>Package will not be deployed.</echo>
+            </else>
+        </if>
+    </target>
+    
+    <!-- =================================
+     target: custom-info
+    ================================= -->
+    <target name="custom-info">
+        <echo>==================================================================
+            Job Name: ${env.JOB_NAME}
+            Deploy Package: ${env.DEPLOY_PACKAGE}
+            Source Package Location: ${env.SOURCE_PACKAGE_LOCATION}
+            Source Package Name: ${env.SOURCE_PACKAGE_NAME}
+            Tomcat Location: ${env.TOMCAT_LOCATION}
+            Destination Package Name: ${env.DESTINATION_PACKAGE_NAME}
+            Restart Tomcat: ${env.RESTART_TOMCAT}
+            Restart Tomcat (as root): ${env.RESTART_TOMCAT_AS_ROOT}
+            Backup Location: ${backup.location}/${backup.name}
+            Workspace: ${env.WORKSPACE}
+====================================================================</echo>
+    </target>
+    
+    <!-- =================================
+     target: restartTomcat using non-root user
+    ================================= -->
+    <target name="restartTomcat" depends="deploy" description="--> Restart tomcat using non-root user">
+        <sshexec host="${host.server}" username="${host.user}" keyfile="${user.home}/.ssh/id_rsa" command="${tomcat.start.stop.script} stop ;ps aux | awk -v pat=${tomcat.location}/con[f]/ '$0 ~ pat {print $2}' | xargs --no-run-if-empty kill -9;${tomcat.start.stop.script} start; " />
+    </target>
+    
+    <!-- =================================
+     target: restartTomcat using root user
+    ================================= -->
+    <target name="restartTomcatAsRoot" depends="deploy" description="--> Restart tomcat using root user">
+        <sshexec host="${host.server}" username="${host.user}" keyfile="${user.home}/.ssh/id_rsa" command="sh ${tomcat.location}/bin/shutdown.sh;ps aux | awk -v pat=${tomcat.location}/con[f]/ '$0 ~ pat {print $2}' | xargs --no-run-if-empty kill -9; sh ${tomcat.location}/bin/startup.sh " />
+    </target>
+    
+    <!-- =================================
+     target: Check SCP Status
+    ================================= -->    
+    <target name="scpWar"><!--added by: bidahal@deerwalk.com -->
+        <scp file="${source.package.location}/${source.package.name}.war" todir="${host.user}@${host.server}:/tmp/${destination.package.name}.war" keyfile="${user.home}/.ssh/id_rsa" verbose="true" passphrase="" />
+    </target><!--added by: bidahal@deerwalk.com -->
+
+    
+    <!-- =================================
+     target: backup-war-and-remove-old
+    ================================= -->
+    <target name="backup-war-and-remove" description="--> Backup old war">
+        <sshexec host="${host.server}" username="${host.user}" keyfile="${user.home}/.ssh/id_rsa" command="mkdir -p ${backup.location} &amp;&amp; cp ${tomcat.location}/webapps/${destination.package.name}.war ${backup.location}/${backup.name}; rm -rf ${tomcat.location}/webapps/${destination.package.name}*" />
+    </target>
+    
+    <!-- =================================
+     target: deploy
+    ================================= -->
+    <target name="deploy" depends="scpWar,backup-war-and-remove" description="--> The deploy target">
+        <sshexec host="${host.server}" username="${host.user}" keyfile="${user.home}/.ssh/id_rsa" command="mv /tmp/${destination.package.name}.war ${tomcat.location}/webapps/${destination.package.name}.war" />
+    </target>
+    
+    <!-- =================================
+     target: taillog
+    ================================= -->    
+    <target name="taillog" description="--> tail catalina log">
+        <if> <!-- added by bidahal@deerwalk.com -->
+            <and>
+                <isset property="env.LOG_BREAK" />
+            </and>
+            <then>
+                <sshexec host="${host.server}" username="${host.user}" keyfile="${user.home}/.ssh/id_rsa" command="tail -f ${tomcat.location}/logs/catalina.out | { sed '/${env.LOG_BREAK}/ q';}" />
+            </then>
+            <else>
+                <sshexec host="${host.server}" username="${host.user}" keyfile="${user.home}/.ssh/id_rsa" command="tail -f ${tomcat.location}/logs/catalina.out | { sed '/org.apache.coyote.AbstractProtocol start/ q';}" />
+            </else>
+        </if> <!-- added by bidahal@deerwalk.com -->
+    </target>
+    
+</project>
